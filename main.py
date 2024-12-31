@@ -4,17 +4,17 @@ import io
 from modules import FallbackAgent, PresageAgent, SegmentorAgent, HandLinesDetector
 import base64
 # pipeline
-def pipeline(image: str):
+def pipeline(base64_image: str):
     fallback = FallbackAgent()
     main_agent = PresageAgent()
     segment_model = SegmentorAgent()
     handline_detector = HandLinesDetector()
-    print(fallback.infer(image=image))
+    print(fallback.infer(base64_image=base64_image))
     # Check the given image consist of hand
-    if "No" or "no" in fallback.infer(image=image):
+    if "No" or "no" in fallback.infer(base64_image=base64_image):
         return "The given image doesn't consist of hand."
 
-    segmented_image = segment_model(image)
+    segmented_image = segment_model(base64_image)
     final_image = handline_detector(segmented_image)
     return main_agent.infer(final_image)
 

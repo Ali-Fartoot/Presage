@@ -6,7 +6,7 @@ def test_image_upload(image):
     url = "http://localhost:8000/presage/"
     
     try:
-        files = {"file": ("image.jpg", image, "image/jpeg")}
+        files = {"file": ("test.jpg", image, "image/jpeg")}
         response = requests.post(url, files=files)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
