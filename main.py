@@ -60,3 +60,10 @@ async def analyze_image(file: UploadFile = File(...)):
         
     except Exception as e:
         return {"error": str(e)}
+    
+
+if __name__ == "__main__":
+    with open("./example/test.jpg", "rb") as img_file:
+        base64_req = convert_to_base64(img_file)
+        result = pipeline(base64_req)
+        print(result)
