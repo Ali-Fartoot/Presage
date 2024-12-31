@@ -21,9 +21,9 @@ class LLMAgent(ABC):
     """
     Abstract base class for LLM agents that handle image processing and inference.
     """
-    def __init__(self, message):
+    def __init__(self, message = None):
         self.message_template = message or []
-        self.client = OpenAI(base_url="http://localhost:8000/v1", api_key="llama.cpp")
+        self.client = OpenAI(base_url="http://localhost:5333/v1", api_key="llama.cpp")
 
     
     def _image_to_base64_data_uris(self, file_path: str) -> str:
@@ -62,7 +62,7 @@ class LLMAgent(ABC):
 
 # Fallback Agent to check is given image comsist of palm or not
 class FallbackAgent(LLMAgent):
-    def __init__(self, message: list[dict]):
+    def __init__(self, message: list[dict] = None):
         super().__init__(message)
         self.message_template = message or [
             {"role": "system", "content": "You are an assistant who should classify if the given image contains a palm or not."},
@@ -95,7 +95,7 @@ class FallbackAgent(LLMAgent):
 
 # Presage Agent
 class PresageAgent(LLMAgent):
-    def __init__(self, message):
+    def __init__(self, message = None):
         super().__init__(message)
         self.message_template = message or [
             {

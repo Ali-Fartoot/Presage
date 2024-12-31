@@ -18,5 +18,5 @@ def test_image_upload(image_path):
         print(f"Unexpected error: {e}")
 
 # Test the function
-result = test_image_upload("../example/test.jpg")
+result = test_image_upload("./example/test.jpg")
 print(result)

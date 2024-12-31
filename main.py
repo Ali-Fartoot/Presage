@@ -9,7 +9,7 @@ def pipeline(image):
     main_agent = PresageAgent()
     segment_model = SegmentorAgent()
     handline_detector = HandLinesDetector()
-
+    print(fallback.infer(image=image))
     # Check the given image consist of hand
     if "No" or "no" in fallback.infer(image=image):
         return "The given image doesn't consist of hand."
