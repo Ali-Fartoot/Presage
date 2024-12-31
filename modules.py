@@ -26,20 +26,6 @@ class LLMAgent(ABC):
         self.client = OpenAI(base_url="http://localhost:5333/v1", api_key="llama.cpp")
 
     
-    def _image_to_base64_data_uris(self, file_path: str) -> str:
-        """
-        Convert image file to base64 data URI.
-        
-        Args:
-            file_path (str): Path to the image file
-            
-        Returns:
-            str: Base64 encoded data URI
-        """
-        with open(file_path, "rb") as img_file:
-            base64_data = base64.b64encode(img_file.read()).decode('utf-8')
-            return f"data:image/png;base64,{base64_data}"
-    
     @abstractmethod
     def infer(self, 
               temperature: float = 0.9,
@@ -76,11 +62,9 @@ class FallbackAgent(LLMAgent):
         ] 
 
 
-    def infer(self, image, temperature = 0.1, max_token = 10, n = 1, stop = None):
+    def infer(self, base64_image: str, temperature = 0.1, max_token = 10, n = 1, stop = None):
 
-        base64_image = self._image_to_base64_data_uris(image)
         self.message_template[1]["content"][0]["image_url"]["url"] = base64_image
-
         response = self.client.chat.completions.create(
         model="local-model",
         messages=self.message_template,
@@ -111,9 +95,8 @@ class PresageAgent(LLMAgent):
             }
         ]
 
-    def infer(self, image, temperature = 0.9, max_token = 1000, n = 1, stop = None):
+    def infer(self, base64_image: str, temperature = 0.9, max_token = 1000, n = 1, stop = None):
 
-        base64_image = self._image_to_base64_data_uris(image)
         self.message_template[1]["content"][0]["image_url"]["url"] = base64_image
 
         response = self.client.chat.completions.create(
