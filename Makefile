@@ -19,8 +19,4 @@ dev:
 	. ./venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 1122 --log-level debug
 
 test:
-	. ./venv/bin/activate $$ $(PYTHON) main.py
-
-# test:
-# 	. ./venv/bin/activate && $(PYTHON) ./test/end_to_end_test.py
-
+	. ./venv/bin/activate && $(PYTHON) ./test/end_to_end_test.py

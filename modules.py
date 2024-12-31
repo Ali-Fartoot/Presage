@@ -6,7 +6,7 @@ from PIL import Image
 import PIL
 from lang_sam import LangSAM
 import numpy as np
-
+import io
 
 class ImageProcessingError(Exception):
     """Raised when there's an error processing the image."""
@@ -46,7 +46,7 @@ class LLMAgent(ABC):
         """
         pass
 
-# Fallback Agent to check is given image comsist of palm or not
+# Fallback Agent to check is given image contains of palm or not
 class FallbackAgent(LLMAgent):
     def __init__(self, message: list[dict] = None):
         super().__init__(message)
@@ -84,7 +84,7 @@ class PresageAgent(LLMAgent):
         self.message_template = message or [
             {
                 "role": "system",
-                "content": "You are an assistant who specializes in creative fortune-telling by analyzing images of people's hands."
+                "content": "You are an assistant who specializes in creative fortune-telling by analyzing images of people's hands. The lines is throw to help  you, so please don't mention that. You can say instead by seeing the lines of you hand I found .."
             },
             {
                 "role": "user",
@@ -113,13 +113,13 @@ class PresageAgent(LLMAgent):
 
 class SegmentorAgent:
     """Segment hand of given image for acuurate"""
-    def __call__(self, image: PIL.Image, text_prompt: str):
+    def __call__(self, image_bytes: bytes, text_prompt: str = None)-> Image:
         self.model = LangSAM()
         text_prompt = text_prompt or "Detect and segment the hand's surface"
-        # image = Image.open(image_path).convert("RGB")
-        image_array = np.array(image)
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
         mask = self.model.predict([image], [text_prompt])
-        mask = mask.squeeze()
+        image_array = np.array(image)
+        mask = mask[0]['masks'].squeeze()
 
         if len(mask.shape) == 3:
             mask = mask[0]
@@ -239,12 +239,9 @@ class HandLinesDetector:
         except Exception as e:
             raise Exception(f"Image processing failed: {e}")
 
-    def __call__(self, image_path: str) -> np.ndarray:
+    def __call__(self, image: Image) -> np.ndarray:
         try:
-            # Read image
-            original = cv2.imread(image_path)
-            if original is None:
-                raise Exception("Failed to load image")
+            original = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
             # Process image and get lines
             _, all_detected_lines = self.process_image(original)
