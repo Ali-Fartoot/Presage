@@ -61,7 +61,7 @@ class LLMAgent(ABC):
         pass
 
 # Fallback Agent to check is given image comsist of palm or not
-class Fallback(LLMAgent):
+class FallbackAgent(LLMAgent):
     def __init__(self, message: list[dict]):
         super().__init__(message)
         self.message_template = message or [
