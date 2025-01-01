@@ -22,4 +22,4 @@ test:
 	@echo "Running unit tests..."
 	. ./venv/bin/activate && pytest ./tests/ -v --capture=no --log-cli-level=INFO
 	@echo "Running end-to-end tests..."
-	. ./venv/bin/activate && $(PYTHON) ./test/end_to_end_test.py || exit 1
+	. ./venv/bin/activate && $(PYTHON) ./tests/end_to_end_test.py || exit 1

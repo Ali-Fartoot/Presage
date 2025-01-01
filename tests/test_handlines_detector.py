@@ -33,4 +33,4 @@ class TestHandLinesDetector:
         test_image = Image.fromarray(np.zeros((100, 100, 3), dtype=np.uint8))
         result = detector(test_image)
         assert isinstance(result, np.ndarray)
-        assert result.shape[2] == 3  # RGB image
+        assert result.shape[2] == 3 

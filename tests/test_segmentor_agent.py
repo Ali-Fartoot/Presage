@@ -1,9 +1,10 @@
+# tests/test_segmentor_agent.py
 import pytest
-from modules import SegmentorAgent
 from unittest.mock import MagicMock, patch
 import numpy as np
 from PIL import Image
-
+import io
+from modules import SegmentorAgent
 class TestSegmentorAgent:
     @pytest.fixture
     def agent(self):
@@ -13,11 +14,11 @@ class TestSegmentorAgent:
     def test_call(self, mock_langsam):
         agent = SegmentorAgent()
         
-        # Create a test image
-        test_image = np.zeros((100, 100, 3), dtype=np.uint8)
-        test_image_bytes = Image.fromarray(test_image).tobytes()
+        test_image = Image.new('RGB', (100, 100), color='white')
+        img_byte_arr = io.BytesIO()
+        test_image.save(img_byte_arr, format='PNG')
+        test_image_bytes = img_byte_arr.getvalue()
         
-        # Mock LangSAM predictions
         mock_mask = np.ones((100, 100), dtype=bool)
         mock_langsam.return_value.predict.return_value = [{'masks': mock_mask[None, None, ...]}]
         
