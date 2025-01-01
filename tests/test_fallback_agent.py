@@ -16,8 +16,7 @@ class TestFallbackAgent:
     def convert_to_base64(self, image_bytes: bytes) -> str:
         base64_data = base64.b64encode(image_bytes).decode('utf-8')
         return f"data:image/png;base64,{base64_data}"
-    
-    @patch('openai.OpenAI')
+
     def test_infer(self, agent):
 
         with open('./example/test.jpg', "rb") as image_file:

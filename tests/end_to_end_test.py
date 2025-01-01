@@ -4,7 +4,8 @@ import requests
 import os
 from PIL import Image
 import io
-
+import time
+import datetime
 class TestEndToEnd:
     @pytest.fixture
     def base_url(self):
@@ -26,6 +27,25 @@ class TestEndToEnd:
             img.save(test_image_path)
         return test_image_path
 
+
+    def measure_process_time(func):
+        """Decorator to measure process time of test functions"""
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            start_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            result = func(*args, **kwargs)
+            
+            end_time = time.time()
+            process_time = end_time - start_time
+            
+            print(f"\nTest: {func.__name__}")
+            print(f"Start Time: {start_datetime}")
+            print(f"Process Time: {process_time:.2f} seconds")
+            return result
+        return wrapper
+    
+    @measure_process_time
     def test_presage_endpoint(self, base_url, test_image):
         """Test the presage endpoint with an image file"""
         url = f"{base_url}/presage/"
@@ -35,7 +55,6 @@ class TestEndToEnd:
             }
             response = requests.post(url, files=files)
         
-        # Assertions
         assert response.status_code == 200
         response_data = response.json()
         assert "filename" in response_data
@@ -53,13 +72,3 @@ class TestEndToEnd:
         assert response.status_code != 200
         response_data = response.json()
         assert "error" in response_data
-
-    @pytest.mark.skip(reason="Server not running")
-    def test_server_not_running(self, base_url):
-        """Test behavior when server is not running"""
-        url = f"{base_url}/presage/"
-        
-        with pytest.raises(requests.exceptions.ConnectionError):
-            requests.post(url, files={
-                "file": ("test.jpg", io.BytesIO(b""), "image/jpeg")
-            })

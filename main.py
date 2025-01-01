@@ -4,20 +4,13 @@ import io
 from modules import FallbackAgent, PresageAgent, SegmentorAgent, HandLinesDetector
 import base64
 import cv2
-
+from fastapi.responses import JSONResponse
+from starlette.status import HTTP_400_BAD_REQUEST
 
 def convert_to_base64(image_bytes: bytes) -> str:
-    """
-    Convert image bytes to base64 data URI.
-    
-    Args:
-        image_bytes (bytes): Image bytes
-        
-    Returns:
-        str: Base64 encoded data URI
-    """
     base64_data = base64.b64encode(image_bytes).decode('utf-8')
     return f"data:image/png;base64,{base64_data}"
+
 
 def pipeline(image: bytes):
     base64_image = convert_to_base64(image)
@@ -32,6 +25,7 @@ def pipeline(image: bytes):
     elif any(x in fallback_result.lower() for x in ["yes"]):
         segmented_image = segment_model(image)
         final_image = handline_detector(segmented_image)
+        
         # Saving image
         cv2.imwrite('./example/final.jpeg', final_image)
         
@@ -42,14 +36,16 @@ def pipeline(image: bytes):
     else:
         return "Unrecognizable image!"
 
-
-
+# App
 app = FastAPI()
 @app.post("/presage/")
 async def analyze_image(file: UploadFile = File(...)):
     # Verify if file is an image
     if not file.content_type.startswith('image/'):
-        return {"error": "File uploaded is not an image"}
+        return JSONResponse(
+            status_code=HTTP_400_BAD_REQUEST,
+            content={"error": "File uploaded is not an image"}
+        )
     
     try:
         # Read the image file
@@ -63,7 +59,9 @@ async def analyze_image(file: UploadFile = File(...)):
         }
         
     except Exception as e:
-        return {"error": str(e)}
-
+        return JSONResponse(
+            status_code=HTTP_400_BAD_REQUEST,
+            content={"error": str(e)}
+        )
 
 
