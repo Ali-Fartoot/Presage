@@ -63,13 +63,3 @@ async def analyze_image(file: UploadFile = File(...)):
             status_code=HTTP_400_BAD_REQUEST,
             content={"error": str(e)}
         )
-
-
-
-
-# Path to your image file
-image_path = "./example/test.jpg"  # Replace with your image path
-
-# Open the image file
-with open(image_path, "rb") as image_file:
-    print(pipeline(image_file.read()))
