@@ -62,7 +62,7 @@ class FallbackAgent(LLMAgent):
         ] 
 
 
-    def infer(self, base64_image: str, temperature = 0.1, max_token = 10, n = 1, stop = None):
+    def infer(self, base64_image: str, temperature = 0, max_token = 10, n = 1, stop = None):
 
         self.message_template[1]["content"][0]["image_url"]["url"] = base64_image
         response = self.client.chat.completions.create(
@@ -95,7 +95,7 @@ class PresageAgent(LLMAgent):
             }
         ]
 
-    def infer(self, base64_image: str, temperature = 0.9, max_token = 1000, n = 1, stop = None):
+    def infer(self, base64_image: str, temperature = 0.8, max_token = 1000, n = 1, stop = None):
 
         self.message_template[1]["content"][0]["image_url"]["url"] = base64_image
 

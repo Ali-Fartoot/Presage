@@ -31,16 +31,13 @@ class TestEndToEnd:
     def measure_process_time(func):
         """Decorator to measure process time of test functions"""
         def wrapper(*args, **kwargs):
-            start_time = time.time()
-            start_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
+            start_time = time.time()            
             result = func(*args, **kwargs)
-            
+
             end_time = time.time()
             process_time = end_time - start_time
             
             print(f"\nTest: {func.__name__}")
-            print(f"Start Time: {start_datetime}")
             print(f"Process Time: {process_time:.2f} seconds")
             return result
         return wrapper
