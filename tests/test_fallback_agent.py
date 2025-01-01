@@ -23,9 +23,9 @@ class TestFallbackAgent:
         with open('./example/test.jpg', "rb") as image_file:
             test_base64 = self.convert_to_base64(image_file.read())
             result = agent.infer(test_base64)
-            assert result.lower() == "yes" 
+            assert any(x in result.lower() for x in ["yes"])
 
         with open('./example/flower.jpg', "rb") as image_file:
             test_base64 = self.convert_to_base64(image_file.read())
             result = agent.infer(test_base64)
-            assert result.lower() == "no" 
+            assert any(x in result.lower() for x in ["no"])

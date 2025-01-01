@@ -53,9 +53,9 @@ async def analyze_image(file: UploadFile = File(...)):
     
     try:
         # Read the image file
-        contents = await file.read()
+        content = await file.read()
         # Main alghorithm
-        result = pipeline(contents)
+        result = pipeline(content)
         
         return {
             "filename": file.filename,

@@ -46,7 +46,7 @@ class LLMAgent(ABC):
         """
         pass
 
-# Fallback Agent to check is given image contains of palm or not
+# Fallback Agent to check the image contains of palm or not
 class FallbackAgent(LLMAgent):
     def __init__(self, message: list[dict] = None):
         super().__init__(message)
@@ -191,14 +191,9 @@ class HandLinesDetector:
     def process_image(self, image: np.ndarray) -> tuple:
         """Process image for line detection."""
         try:
-            # Convert to grayscale
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            
-            # Apply CLAHE
             clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
             enhanced = clahe.apply(gray)
-            
-            # Multi-scale processing
             all_detected_lines = []
             scales = [(7, 7), (9, 9), (11, 11)]
             
@@ -242,37 +237,27 @@ class HandLinesDetector:
     def __call__(self, image: Image) -> np.ndarray:
         try:
             original = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-
-            # Process image and get lines
             _, all_detected_lines = self.process_image(original)
-            
-            # Create empty image for lines
             final_lines = np.zeros_like(original)
-            
-            # Merge similar lines
             merged_lines = self.merge_similar_lines(
                 all_detected_lines, 
                 self.angle_threshold, 
                 self.distance_threshold
             )
 
-            # Draw merged lines
             for line in merged_lines:
                 (x1, y1), (x2, y2), _ = line
                 cv2.line(final_lines, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-            # Post-processing
             kernel_smooth = np.ones((3,3), np.uint8)
             final_lines = cv2.dilate(final_lines, kernel_smooth, iterations=1)
             final_lines = cv2.erode(final_lines, kernel_smooth, iterations=1)
 
-            # Combine with original image
+
             alpha = 0.7
             beta = 1.0
             gamma = 0
             output = cv2.addWeighted(original, alpha, final_lines, beta, gamma)
-
-            # Final enhancement
             output_enhanced = cv2.convertScaleAbs(output, alpha=1.2, beta=10)
             
             return cv2.cvtColor(output_enhanced, cv2.COLOR_BGR2RGB)
