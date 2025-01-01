@@ -19,4 +19,7 @@ dev:
 	. ./venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 1122 --log-level debug
 
 test:
-	. ./venv/bin/activate && $(PYTHON) ./test/end_to_end_test.py
+	@echo "Running unit tests..."
+	. ./venv/bin/activate && pytest ./tests/ -v --capture=no --log-cli-level=INFO
+	@echo "Running end-to-end tests..."
+	. ./venv/bin/activate && $(PYTHON) ./test/end_to_end_test.py || exit 1
