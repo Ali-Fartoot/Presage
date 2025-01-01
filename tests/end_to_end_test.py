@@ -1,4 +1,3 @@
-# tests/test_end_to_end.py
 import pytest
 import requests
 import os
@@ -6,7 +5,25 @@ from PIL import Image
 import io
 import time
 import datetime
+from functools import wraps
+
 class TestEndToEnd:
+    @staticmethod
+    def measure_process_time(func):
+        """Decorator to measure process time of test functions"""
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            start_time = time.time()            
+            result = func(self, *args, **kwargs)
+
+            end_time = time.time()
+            process_time = end_time - start_time
+            
+            print(f"\nTest: {func.__name__}")
+            print(f"Process Time: {process_time:.2f} seconds")
+            return result
+        return wrapper
+
     @pytest.fixture
     def base_url(self):
         """Fixture for base URL of the API"""
@@ -27,21 +44,6 @@ class TestEndToEnd:
             img.save(test_image_path)
         return test_image_path
 
-
-    def measure_process_time(func):
-        """Decorator to measure process time of test functions"""
-        def wrapper(*args, **kwargs):
-            start_time = time.time()            
-            result = func(*args, **kwargs)
-
-            end_time = time.time()
-            process_time = end_time - start_time
-            
-            print(f"\nTest: {func.__name__}")
-            print(f"Process Time: {process_time:.2f} seconds")
-            return result
-        return wrapper
-    
     @measure_process_time
     def test_presage_endpoint(self, base_url, test_image):
         """Test the presage endpoint with an image file"""
@@ -58,6 +60,7 @@ class TestEndToEnd:
         assert "analysis_result" in response_data
         assert isinstance(response_data["analysis_result"], str)
 
+    @measure_process_time
     def test_presage_endpoint_invalid_file(self, base_url):
         """Test the presage endpoint with invalid file type"""
         url = f"{base_url}/presage/"
