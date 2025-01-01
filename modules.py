@@ -114,7 +114,7 @@ class PresageAgent(LLMAgent):
 class SegmentorAgent:
     """Segment hand of given image for acuurate"""
     def __call__(self, image_bytes: bytes, text_prompt: str = None)-> Image:
-        self.model = LangSAM()
+        self.model = LangSAM(sam_type="sam2.1_hiera_tiny", ckpt_path="./models/")
         text_prompt = text_prompt or "Detect and segment the hand's surface"
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
         mask = self.model.predict([image], [text_prompt])
