@@ -65,3 +65,11 @@ async def analyze_image(file: UploadFile = File(...)):
         )
 
 
+
+
+# Path to your image file
+image_path = "./example/test.jpg"  # Replace with your image path
+
+# Open the image file
+with open(image_path, "rb") as image_file:
+    print(pipeline(image_file.read()))
