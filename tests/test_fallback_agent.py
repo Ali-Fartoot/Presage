@@ -20,12 +20,12 @@ class TestFallbackAgent:
     @patch('openai.OpenAI')
     def test_infer(self, agent):
 
-        with open('../example/test.jpg', "rb") as image_file:
+        with open('./example/test.jpg', "rb") as image_file:
             test_base64 = self.convert_to_base64(image_file.read())
             result = agent.infer(test_base64)
             assert result.lower() == "yes" 
 
-        with open('../example/flower.jpg', "rb") as image_file:
+        with open('./example/flower.jpg', "rb") as image_file:
             test_base64 = self.convert_to_base64(image_file.read())
             result = agent.infer(test_base64)
             assert result.lower() == "no" 
