@@ -2,6 +2,7 @@ import pytest
 from modules import HandLinesDetector
 import numpy as np
 from PIL import Image
+from end_to_end_test import measure_process_time
 
 class TestHandLinesDetector:
     @pytest.fixture
@@ -27,7 +28,8 @@ class TestHandLinesDetector:
         edges, lines = detector.process_image(test_image)
         assert isinstance(edges, np.ndarray)
         assert isinstance(lines, list)
-
+        
+    @measure_process_time
     def test_call(self, detector):
         # Create test PIL Image
         test_image = Image.fromarray(np.zeros((100, 100, 3), dtype=np.uint8))

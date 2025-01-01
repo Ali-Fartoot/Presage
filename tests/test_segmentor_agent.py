@@ -5,11 +5,13 @@ import numpy as np
 from PIL import Image
 import io
 from modules import SegmentorAgent
+from end_to_end_test import measure_process_time
 class TestSegmentorAgent:
     @pytest.fixture
     def agent(self):
         return SegmentorAgent()
-
+    
+    @measure_process_time
     @patch('lang_sam.LangSAM')
     def test_call(self, mock_langsam):
         agent = SegmentorAgent()

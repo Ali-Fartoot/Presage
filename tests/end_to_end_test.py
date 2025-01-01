@@ -7,23 +7,23 @@ import time
 import datetime
 from functools import wraps
 
+
+
+def measure_process_time(func):
+    """Decorator to measure process time of test functions"""
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        start_time = time.time()            
+        result = func(self, *args, **kwargs)
+        end_time = time.time()
+        process_time = end_time - start_time
+        
+        print(f"\nTest: {func.__name__}")
+        print(f"Process Time: {process_time:.2f} seconds")
+        return result
+    return wrapper
+
 class TestEndToEnd:
-    @staticmethod
-    def measure_process_time(func):
-        """Decorator to measure process time of test functions"""
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            start_time = time.time()            
-            result = func(self, *args, **kwargs)
-
-            end_time = time.time()
-            process_time = end_time - start_time
-            
-            print(f"\nTest: {func.__name__}")
-            print(f"Process Time: {process_time:.2f} seconds")
-            return result
-        return wrapper
-
     @pytest.fixture
     def base_url(self):
         """Fixture for base URL of the API"""
