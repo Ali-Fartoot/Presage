@@ -9,7 +9,7 @@ install:
 run:
 	@echo "Starting LLM server..."
 	. ./venv/bin/activate && $(PYTHON) -m llama_cpp.server --port 5333  \
-		--n-gpu-layers 16 \
+		--n_gpu_layers 16 \
 		--model ./models/ggml.gguf \
 		--clip_model_path ./models/clip.gguf --chat_format minicpm-v-2.6 > llm.log 2>&1 & \
 	echo $$! > llm.pid
