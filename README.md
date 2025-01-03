@@ -1,7 +1,3 @@
-Sure, here's the improved version of your README file:
-
----
-
 # Presage
 
 Presage is an API-driven application utilizing **FastAPI** and **Large Language Models (LLMs)** to perform fortune-telling based on users' palm images. It leverages `llm-cpp-server` and `Lang-Segment-Anything (SAM-Lang)` to process hand images and generate insightful analyses.
